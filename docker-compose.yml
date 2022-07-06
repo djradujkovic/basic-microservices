@@ -1,0 +1,23 @@
+services:
+  spring-boot-app:
+    platform: linux/amd64
+    build: ./spring-boot-app
+    network_mode: host
+    command: "java -jar target/spring-boot-app-1.0-SNAPSHOT.jar"
+    depends_on:
+      - db
+  db:
+    platform: linux/amd64
+    image: postgres:10
+    env_file: db.env
+    ports:
+      - "5432:5432/tcp"
+
+  node-app:
+    platform: linux/amd64
+    build: ./node-app
+    ports:
+      - "8081:8081"
+    command: "node index.js"
+    depends_on:
+      - spring-boot-app
